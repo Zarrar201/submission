@@ -1,0 +1,13 @@
+Question 1
+Answer - I’d use **object detection** since we need to check if the label exists and is in the right place, not just classify the product. If detection struggles, I’d fall back to **segmentation** for pixel-level accuracy, or combine detection with classification for more reliability.
+
+Question 2
+Answer - To debug why the model fails on factory images after training on 1000 images, I would first run a sanity check by sending a few training images through the inference pipeline to confirm preprocessing matches; if accuracy drops there, preprocessing is the issue. Next, I would compare a small set of training and factory images side by side to check for domain shift in lighting, color, or resolution. I would then validate that factory labels are consistent with training annotations by overlaying ground truth and predicted boxes. To understand error patterns, I would test on a batch of factory images and review the top false positives and false negatives visually. I would also compute metrics like precision, recall, and average precision on a small labeled set of factory images to quantify gaps. If mismatches appear, I would fine-tune the model on a small labeled subset of factory images to see if performance improves. Finally, if the model still fails unexpectedly, I would use visualization tools such as Grad-CAM to confirm whether the model is focusing on the right regions. This structured sequence helps isolate preprocessing issues, domain shifts, label inconsistencies, and model limitations efficiently.
+
+
+Question 3
+Answer - Accuracy is not the right metric here because the dataset is likely imbalanced, with far more non-defective products than defective ones. Missing 1 out of 10 defective products means the model has poor recall on the defective class, which is critical in this use case. Instead of accuracy, I would focus on recall or sensitivity for the defective class, since the cost of missing a defective product is high. Precision is also useful, but recall takes priority here to ensure defective products are caught consistently.
+
+
+Question 4
+Answer - Yes, they should generally be kept in the dataset if they reflect real-world scenarios where the model will need to detect blurry or partially visible objects, since this improves robustness. However, including too many low-quality images may confuse the model or slow convergence. The trade-off is between realism and clarity: keeping them makes the model more practical for deployment but may reduce peak accuracy, while removing them simplifies training but risks poor performance in real environments.
